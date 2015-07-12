@@ -43,7 +43,6 @@
        ;; Move to start of heading
        (re-search-forward "\\* " (line-end-position) t)
        (setq level (1- (current-column)))
-       (message "-- %s, level %d" (what-line) level)
        (if (< (length sec-num) level)
            ;; Expand to next level
            (setq sec-num (append sec-num '(0)))
@@ -51,10 +50,8 @@
          (unless (= (length sec-num) level)
            (setq sec-num (butlast sec-num (- (length sec-num) level)))))
        ;; Increment
-       (message "-- sec num %s" sec-num)
        (setq sec-num (append (butlast sec-num 1)
                                    (list (1+ (car (last sec-num 1))))))
-       (message "-- sec num append %s" sec-num)
        (setq sec-str (concat "<<" (mapconcat 'number-to-string sec-num ".")
                              ">>"))
        (if (re-search-forward "<<.*>>" (line-end-position) t)
