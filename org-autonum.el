@@ -31,6 +31,7 @@
 ;;; Installation:
 ;;
 ;; Install org-autonum.el in the load-path
+;; (require 'org-autonum)
 ;; Add function to org-mode hook
 ;; (add-hook 'org-insert-heading-hook 'nma/org-autonum)
 ;;
@@ -60,3 +61,6 @@
          ;; Insert new marker
          (insert sec-str))))))
 
+(provide 'org-autonum)
+
+;; org-autonum ends here

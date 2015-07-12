@@ -14,5 +14,6 @@ part of any exported output.
 Install org-autonum.el in the load-path.
 Add function to org-mode hook.
 
+    (require 'org-autonum)
     (add-hook 'org-insert-heading-hook 'nma/org-autonum)
 
