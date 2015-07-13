@@ -12,9 +12,15 @@ part of any exported output.
 ## Installation
 
 Install org-autonum.el in the load-path.
-Add function to org-mode hook.
 
     (require 'org-autonum)
+
+Enable the feature in the file header.
+
+    # -*- org-autonum-enable: t; -*-
+
+Add function to org-mode hook.
+
     (add-hook 'org-insert-heading-hook 'nma/org-autonum)
 
 org-insert-heading-hook is used only when M-Enter is used.

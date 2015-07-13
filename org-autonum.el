@@ -30,8 +30,10 @@
 
 ;;; Installation:
 ;;
-;; Install org-autonum.el in the load-path
+;; Install org-autonum.el in the load-path.
 ;;  (require 'org-autonum)
+;; Set enable in the file header.
+;;  # -*- org-autonum-enable: t; -*-
 ;; Add function to org-mode hook
 ;;  (add-hook 'org-insert-heading-hook 'nma/org-autonum)
 ;; org-insert-heading-hook is used only when M-Enter is used
@@ -42,32 +44,37 @@
 ;;     (lambda (state) (if (eq state 'contents) (nma/org-autonum))))
 ;;
 
+(defvar org-autonum-enable nil
+  "Enables auto-numbering of org-mode outline headings")
+
 (defun nma/org-autonum ()
   (interactive)
-  (let ((sec-num '(0)))
-    (org-map-entries
-     (lambda ()
-       "Insert a section number of form <<x.y.z>> before the headling"
-       ;; Move to start of heading
-       (re-search-forward "\\* " (line-end-position) t)
-       (setq level (1- (current-column)))
-       (if (< (length sec-num) level)
-           ;; Expand to next level
-           (setq sec-num (append sec-num '(0)))
-         ;; Prune to level
-         (unless (= (length sec-num) level)
-           (setq sec-num (butlast sec-num (- (length sec-num) level)))))
-       ;; Increment
-       (setq sec-num (append (butlast sec-num 1)
-                                   (list (1+ (car (last sec-num 1))))))
-       (setq sec-str (concat "<<" (mapconcat 'number-to-string sec-num ".")
-                             ">>"))
-       (if (re-search-forward "<<.*>>" (line-end-position) t)
-           ;; Replace existing marker if different
-           (unless (string= (match-string 0) sec-str)
-             (replace-match sec-str nil nil))
-         ;; Insert new marker
-         (insert sec-str))))))
+  (if org-autonum-enable
+      (progn
+        (setq sec-num '(0))
+        (org-map-entries
+         (lambda ()
+           "Insert a section number of form <<x.y.z>> before the headling"
+           ;; Move to start of heading
+           (re-search-forward "\\* " (line-end-position) t)
+           (setq level (1- (current-column)))
+           (if (< (length sec-num) level)
+               ;; Expand to next level
+               (setq sec-num (append sec-num '(0)))
+             ;; Prune to level
+             (unless (= (length sec-num) level)
+               (setq sec-num (butlast sec-num (- (length sec-num) level)))))
+           ;; Increment
+           (setq sec-num (append (butlast sec-num 1)
+                                 (list (1+ (car (last sec-num 1))))))
+           (setq sec-str (concat "<<" (mapconcat 'number-to-string sec-num ".")
+                                 ">>"))
+           (if (re-search-forward "<<.*>>" (line-end-position) t)
+               ;; Replace existing marker if different
+               (unless (string= (match-string 0) sec-str)
+                 (replace-match sec-str nil nil))
+             ;; Insert new marker
+             (insert sec-str)))))))
 
 (provide 'org-autonum)
 
