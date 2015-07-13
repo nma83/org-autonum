@@ -17,3 +17,9 @@ Add function to org-mode hook.
     (require 'org-autonum)
     (add-hook 'org-insert-heading-hook 'nma/org-autonum)
 
+org-insert-heading-hook is used only when M-Enter is used.
+org-autonum can be added to other hooks such as org-cycle-hook
+to refresh section numbers when viewing contents for example.
+
+   (add-hook 'org-cycle-hook
+     (lambda (state) (if (eq state 'contents) (nma/org-autonum))))

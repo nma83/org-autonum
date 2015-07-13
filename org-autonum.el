@@ -31,12 +31,19 @@
 ;;; Installation:
 ;;
 ;; Install org-autonum.el in the load-path
-;; (require 'org-autonum)
+;;  (require 'org-autonum)
 ;; Add function to org-mode hook
-;; (add-hook 'org-insert-heading-hook 'nma/org-autonum)
+;;  (add-hook 'org-insert-heading-hook 'nma/org-autonum)
+;; org-insert-heading-hook is used only when M-Enter is used
+;;
+;; org-autonum can be added to other hooks such as org-cycle-hook
+;; to refresh section numbers when viewing contents for example.
+;;  (add-hook 'org-cycle-hook
+;;     (lambda (state) (if (eq state 'contents) (nma/org-autonum))))
 ;;
 
 (defun nma/org-autonum ()
+  (interactive)
   (let ((sec-num '(0)))
     (org-map-entries
      (lambda ()
@@ -56,8 +63,9 @@
        (setq sec-str (concat "<<" (mapconcat 'number-to-string sec-num ".")
                              ">>"))
        (if (re-search-forward "<<.*>>" (line-end-position) t)
-           ;; Replace existing marker
-           (replace-match sec-str nil nil)
+           ;; Replace existing marker if different
+           (unless (string= (match-string 0) sec-str)
+             (replace-match sec-str nil nil))
          ;; Insert new marker
          (insert sec-str))))))
 
